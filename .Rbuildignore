@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.old$
+^others$
+^results$
+^tests$
+^tmp$

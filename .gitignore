@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.old
+src/*.o
+src/*.so
+src/*.dll
+tmp
+others
+results
+tests

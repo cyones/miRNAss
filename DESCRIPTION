@@ -1,0 +1,12 @@
+Package: miRNAss
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.99.0
+Author: Cristian Yones
+Maintainer: Cristian Yones <cyones@sinc.unl.edu.ar>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: Apache License 2.0
+Encoding: UTF-8
+LinkingTo: Rcpp
+LazyData: true
