@@ -10,3 +10,9 @@ License: Apache License 2.0
 Encoding: UTF-8
 LinkingTo: Rcpp
 LazyData: true
+Imports:
+    Matrix,
+    RSpectra,
+    CORElearn
+NeedsCompilation: yes
+RoxygenNote: 5.0.1
