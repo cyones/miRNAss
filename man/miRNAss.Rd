@@ -9,23 +9,23 @@ miRNAss(x, y, nEigenVectors = min(400, round(nrow(x)/5)),
   positiveProp = NULL, neg2label = 0.05, thresholdObjective = "Gm")
 }
 \arguments{
-\item{x}{- Data frame with features extracted from stem-loop sequences}
+\item{x}{Data frame with features extracted from stem-loop sequences}
 
-\item{y}{- Vector of labels of the stem-loop sequences. It must have -1 for negative examples, 1 for known miRNAs and zero for the unknown sequences (the ones that would be classificated).}
+\item{y}{Vector of labels of the stem-loop sequences. It must have -1 for negative examples, 1 for known miRNAs and zero for the unknown sequences (the ones that would be classificated).}
 
-\item{nEigenVectors}{- Number of eigen vectors used to aproximate the solution of the optimization problem. If the number is too low, smoother topographic solutions are founded, probabily losing SP but achieving a better SE. Normaly 400 are sufficient.}
+\item{nEigenVectors}{Number of eigen vectors used to aproximate the solution of the optimization problem. If the number is too low, smoother topographic solutions are founded, probabily losing SP but achieving a better SE. Normaly 400 are sufficient.}
 
-\item{nNearestNeighbor}{- Number of nearest neighbors in the KNN graph. The default value is 10.}
+\item{nNearestNeighbor}{Number of nearest neighbors in the KNN graph. The default value is 10.}
 
-\item{missPenalization}{- Penalization of the missclassification of known examples. The default value is 1. If the examples are not very confident, this value can be diminished.}
+\item{missPenalization}{Penalization of the missclassification of known examples. The default value is 1. If the examples are not very confident, this value can be diminished.}
 
-\item{scallingMethod}{- method used for normalization and scalling of the features. The options are 'none', 'whitening' and 'relief' (the default option). The first option does nothing, the second call the function 'scale' and the last one uses the ReliefFexpRank algorithm from the coreLearn package [1]}
+\item{scallingMethod}{Method used for normalization and scalling of the features. The options are 'none', 'whitening' and 'relief' (the default option). The first option does nothing, the second call the function 'scale' and the last one uses the ReliefFexpRank algorithm from the coreLearn package.}
 
-\item{positiveProp}{- Expected proportion of positive sequences. If it is not provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there are negative examples or as 2 * sum(y > 0) / sum(y == 0) there are not any negative example.}
+\item{positiveProp}{Expected proportion of positive sequences. If it is not provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there are negative examples or as 2 * sum(y > 0) / sum(y == 0) there are not any negative example.}
 
-\item{thresholdObjective}{- Performance measure that would be optimized when estimating the threshold. The options are 'Gm' (geometric mean of the SE and the SP), 'G' (geometric mean of the SE and the precision) and 'none' (do not calculate any threshold). The default value is 'Gm'.}
+\item{neg2label}{Proportion of unlabeled stem-loops that would be labeled as negative with the automatic method to start the classification algorithm. The default is 0.05.}
 
-\item{neg2Label}{- Proportion of unlabeled stem-loops that would be labeled as negative with the automatic method to start the classification algorithm. The default is 0.05.}
+\item{thresholdObjective}{Performance measure that would be optimized when estimating the threshold. The options are 'Gm' (geometric mean of the SE and the SP), 'G' (geometric mean of the SE and the precision) and 'none' (do not calculate any threshold). The default value is 'Gm'.}
 }
 \value{
 Returns a vector with the same size of the input vector y with the prediction scores for all sequences (even the labelled examples). If a thresholdObjective different from 'none' was set, the threshold is estimated and subtracted from the scores, therefore the new threshold that divide the classes is zero. Also, the positive scores are divided by the max positive score, and the negative scores are divided by the magnitud of the minimum negative score.
@@ -38,8 +38,6 @@ Main function of miRNAss package
 	y[sample(which(y>0),200)] = 0
 	y[sample(which(y<0),700)] = 0
 	x = subset(celegans, select = -CLASS)
-	@references
-	[1] cita
-	@export
+
 }
 
