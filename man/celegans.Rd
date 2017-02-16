@@ -3,19 +3,18 @@
 \docType{data}
 \name{celegans}
 \alias{celegans}
-\title{Features extracted from stem loops of C. elegans.}
+\title{Features extracted from hairpins of Caenorhabditis elegans.}
 \format{A data frame with 1000 rows and 29 columns. The first 28 columns are
-numeric and are the same features than the used in [1]. The last column is a
-logical variable indicating if the stem-loop is a pre-miRNA or not.}
+numeric features used in [1]. The last column is a logical variable indicating
+ if the stem-loop is a pre-miRNA or not.}
 \usage{
 celegans
 }
 \description{
-Full baby name data provided by the SSA. This includes all names with at
-least 5 uses.
+Small dataset of features extracted from C. elegans hairpins. The full dataset can be downloaded
+from
 }
 \references{
 [1] Gudyś, A., Szcześniak, M. W., Sikora, M., & Makałowska, I. (2013). HuntMi: an efficient and taxon-specific approach in pre-miRNA identification. BMC bioinformatics, 14(1), 1.
 }
 \keyword{datasets}
-

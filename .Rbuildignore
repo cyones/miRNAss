@@ -1,8 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.old$
+^tmp$
+^README$
+^README.gddoc$
 ^others$
 ^results$
-^tests$
-^tmp$
 ^_config.yml$
