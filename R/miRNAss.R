@@ -18,11 +18,11 @@
 #' function 'scale' and the last one uses the ReliefFexpRank algorithm from
 #' the coreLearn package.
 #' @param positiveProp Expected proportion of positive sequences. If it is not
-#' provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there are
-#' negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.
+#' provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there
+#' are negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.
 #' @param neg2label Proportion of unlabeled stem-loops that would be labeled as
-#' negative with the automatic method to start the classification algorithm. The
-#'  default is 0.05.
+#' negative with the automatic method to start the classification algorithm.
+#' The default is 0.05.
 #' @param thresholdObjective Performance measure that would be optimized when
 #' estimating the threshold. The options are 'Gm' (geometric mean of the SE and
 #' the SP), 'G' (geometric mean of the SE and the precision) and 'none' (do not
@@ -31,11 +31,11 @@
 #' leave OpenMP decide the number (may vary across different platforms).
 #' @return Returns a vector with the same size of the input vector y with the
 #' prediction scores for all sequences (even the labelled examples). If a
-#' threshold Objective different from 'none' was set, the threshold is estimated
-#' and subtracted from the scores, therefore the new threshold that divide the
-#' classes is zero. Also, the positive scores are divided by the max positive
-#' score, and the negative scores are divided by the magnitud of the minimum
-#' negative score.
+#' threshold Objective different from 'none' was set, the threshold is
+#' estimated and subtracted from the scores, therefore the new threshold that
+#' divide the classes is zero. Also, the positive scores are divided by the max
+#' positive score, and the negative scores are divided by the magnitud of the
+#' minimum negative score.
 #' @examples
 #' # First construct the label vector with the CLASS column
 #' 	y = as.numeric(celegans$CLASS)*2 - 1
@@ -82,7 +82,8 @@ miRNAss = function(x, y,
         if (is.null(positiveProp))
             positiveProp = 2 * sum(y > 0) / sum(y == 0)
         if (scallingMethod == "relief") {
-            warning("Relief cannot be used without negative examples, switching to whitening")
+            warning(paste0("Relief cannot be used without negative examples,",
+                           " switching to whitening"))
             scallingMethod = "whitening"
         }
     }
@@ -95,7 +96,8 @@ miRNAss = function(x, y,
         stop("Invalid scalling method")
 
 
-    A = .adjacencyMatrixKNN(x = x, y = y, nn = nNearestNeighbor, threadNumber = threadNumber)
+    A = .adjacencyMatrixKNN(x = x, y = y, nn = nNearestNeighbor,
+                            threadNumber = threadNumber)
 
     desc = .eigenDecom(A, nEigenVectors)
 
