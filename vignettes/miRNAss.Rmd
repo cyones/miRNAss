@@ -1,0 +1,89 @@
+---
+title: 'miRNAss'
+author: 'Cristian Yones'
+date: '8 de marzo de 2017'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, useFancyQuotes = FALSE)
+```
+
+MiRNAss is a machine learning method specifically designed for pre-miRNA prediction. It takes advantage of unlabeled sequences to improve the prediction rates even when there are just a few positive examples, and when the negative examples are unreliable or are not good representatives of its class. Furthermore, the method can automatically search for negative examples if the user is unable to provide them. MiRNAss can find a good boundary to divide the pre-miRNAs from other groups of sequences; it automatically optimizes the threshold that defines the classes boundaries, and thus, it is robust to high class imbalance. Each step of the method is scalable and can handle large volumes of data.
+
+The last version of the package can be found at Bioconductor. Also, the development version of the package can be found at: <https://github.com/cyones/miRNAss>
+
+# Contact
+- Cristian Yones <cyones(at)sinc.unl.edu.ar>
+- sinc(i):  http://fich.unl.edu.ar/sinc/
+
+Usage
+-----
+After install the package, load miRNAss with the following command:
+
+```{r}
+library('miRNAss')
+```
+
+The following command is the simplest way to execute miRNAss:
+
+```{r, eval=FALSE}
+miRNAss(features, labels)
+```
+
+Where:
+???features??? is a data frame with the features extracted from  sequences, one sequence per row and one numeric feature per column.
+???labels??? is a numeric vector where the i-th element has a value of 1 if it is a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an unknown sequence that has to be classified (predicted) by the method.
+
+The data provided with the package can be used to test miRNAss. This small dataset is composed of features extracted from C. elegans hairpins. First construct the label vector with the CLASS column
+```{r}
+y = as.numeric(celegans$CLASS)*2 - 1
+```
+
+Remove some labels to make a test
+```{r}
+y[sample(which(y > 0),200)] = 0
+y[sample(which(y < 0),700)] = 0
+```
+
+Take all the features but remove the label column
+```{r}
+x = subset(celegans, select = -CLASS)
+```
+
+Call miRNAss with default parameters
+```{r}
+p = miRNAss(x,y)
+```
+
+Calculate some performance measures
+```{r}
+SE = mean(p[ celegans$CLASS & y == 0] > 0)
+SP = mean(p[!celegans$CLASS & y == 0] < 0)
+cat('Sensitivity: ', SE, '\nSpecificity: ', SP, '\n')
+```
+
+For more help about all the parameters and a full example execute:
+```{r, eval=FALSE}
+help(miRNAss)
+```
+# Datasets and test scripts
+A set of experiments and comparisons with other methods can be done. The scripts and the data of these experiments can be found in:
+
+<http://sourceforge.net/projects/sourcesinc/files/mirnass/experiment_scripts.zip>
+
+To run these tests, after unzip the file, set this directory as the working directory and simply run each script with the function 'source':
+
+```{r, eval=FALSE}
+setwd('experiment_scripts')
+source('2_delta-mirBase.R')
+```
+
+This will generate one csv file for each test in the ???results??? folder. It is important to point that most of these experiments are computationally expensive and could take quite a while (about 40 minutes for the experiment 2_delta-mirBase.R in an intel i7 PC).
+You can plot the results executing:
+
+```{r, eval=FALSE}
+source('plotResults.R')
+```
+
+The figures will be saved in the folder 'results'.

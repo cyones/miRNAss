@@ -35,12 +35,12 @@ function 'scale' and the last one uses the ReliefFexpRank algorithm from
 the coreLearn package.}
 
 \item{positiveProp}{Expected proportion of positive sequences. If it is not
-provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there are
-negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.}
+provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there
+are negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.}
 
 \item{neg2label}{Proportion of unlabeled stem-loops that would be labeled as
-negative with the automatic method to start the classification algorithm. The
- default is 0.05.}
+negative with the automatic method to start the classification algorithm.
+The default is 0.05.}
 
 \item{thresholdObjective}{Performance measure that would be optimized when
 estimating the threshold. The options are 'Gm' (geometric mean of the SE and
@@ -53,11 +53,11 @@ leave OpenMP decide the number (may vary across different platforms).}
 \value{
 Returns a vector with the same size of the input vector y with the
 prediction scores for all sequences (even the labelled examples). If a
-threshold Objective different from 'none' was set, the threshold is estimated
-and subtracted from the scores, therefore the new threshold that divide the
-classes is zero. Also, the positive scores are divided by the max positive
-score, and the negative scores are divided by the magnitud of the minimum
-negative score.
+threshold Objective different from 'none' was set, the threshold is
+estimated and subtracted from the scores, therefore the new threshold that
+divide the classes is zero. Also, the positive scores are divided by the max
+positive score, and the negative scores are divided by the magnitud of the
+minimum negative score.
 }
 \description{
 Main function of miRNAss package
