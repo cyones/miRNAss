@@ -1,7 +1,7 @@
 Package: miRNAss
 Type: Package
 Title: Genome-wide discovery of pre-miRNAs with few labeled examples
-Version: 0.99.0
+Version: 0.99.1
 Author: Cristian Yones
 Maintainer: Cristian Yones <cyones@sinc.unl.edu.ar>
 Description: MiRNAss is a machine learning method specifically designed for 
@@ -17,6 +17,8 @@ Description: MiRNAss is a machine learning method specifically designed for
 License: Apache License 2.0
 Encoding: UTF-8
 LazyData: true
+Suggest: 
+    S4Vectors
 Imports:
     Matrix,
     RSpectra,
@@ -27,6 +29,7 @@ LinkingTo: Rcpp
 VignetteBuilder: knitr
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
+Roxygen: list(roclets = c('rd', 'collate', 'namespace', 'vignettes'))
 biocViews:
     Classification,
     GraphAndNetwork,

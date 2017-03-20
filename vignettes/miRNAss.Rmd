@@ -32,10 +32,16 @@ miRNAss(features, labels)
 ```
 
 Where:
-???features??? is a data frame with the features extracted from  sequences, one sequence per row and one numeric feature per column.
-???labels??? is a numeric vector where the i-th element has a value of 1 if it is a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an unknown sequence that has to be classified (predicted) by the method.
 
-The data provided with the package can be used to test miRNAss. This small dataset is composed of features extracted from C. elegans hairpins. First construct the label vector with the CLASS column
+* features: is a data frame with the features extracted from hairpyn sequences, one sequence per row and one numeric feature per column. The hairpin sequences
+can be extracted from a raw genome using HExtractor
+(<https://sourceforge.net/projects/sourcesinc/files/hextractor/>), and the
+features can be calculated using miRNAfe (<https://sourceforge.net/projects/sourcesinc/files/mirnafe/> or <http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/>). The whole pipeline consist on extract the hairpins from a raw genome in fasta format. The output, also in fasta format is the input to miRNAfe, which as result gives a comma separate 
+file that can be easily load into R.
+
+* labels: is a numeric vector where the i-th element has a value of 1 if it is a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an unknown sequence that has to be classified (predicted) by the method.
+
+The data provided with the package can be used to test miRNAss. This small dataset is composed of a small set of features extracted from 1000 hairpins randomly extracted from C. elegans hairpins. To use miRNAss with this dataset, first construct the label vector with the CLASS column
 ```{r}
 y = as.numeric(celegans$CLASS)*2 - 1
 ```
