@@ -1,17 +1,32 @@
 ---
-title: 'miRNAss'
-author: 'Cristian Yones'
-date: '8 de marzo de 2017'
-output: pdf_document
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, useFancyQuotes = FALSE)
 ```
 
-MiRNAss is a machine learning method specifically designed for pre-miRNA prediction. It takes advantage of unlabeled sequences to improve the prediction rates even when there are just a few positive examples, and when the negative examples are unreliable or are not good representatives of its class. Furthermore, the method can automatically search for negative examples if the user is unable to provide them. MiRNAss can find a good boundary to divide the pre-miRNAs from other groups of sequences; it automatically optimizes the threshold that defines the classes boundaries, and thus, it is robust to high class imbalance. Each step of the method is scalable and can handle large volumes of data.
+MiRNAss is a machine learning method specifically designed for pre-miRNA
+prediction. It takes advantage of unlabeled sequences to improve the prediction
+rates even when there are just a few positive examples, and when the negative
+examples are unreliable or are not good representatives of its class. 
+Furthermore, the method can automatically search for negative examples if the
+user is unable to provide them. MiRNAss can find a good boundary to divide the
+pre-miRNAs from other groups of sequences; it automatically optimizes the
+threshold that defines the classes boundaries, and thus, it is robust to high
+class imbalance. Each step of the method is scalable and can handle large
+volumes of data.
 
-The last version of the package can be found at Bioconductor. Also, the development version of the package can be found at: <https://github.com/cyones/miRNAss>
+The last version of the package can be found at Bioconductor. Also, the
+development version of the package can be found at:
+<https://github.com/cyones/miRNAss>
 
 # Contact
 - Cristian Yones <cyones(at)sinc.unl.edu.ar>
@@ -33,15 +48,25 @@ miRNAss(features, labels)
 
 Where:
 
-* features: is a data frame with the features extracted from hairpyn sequences, one sequence per row and one numeric feature per column. The hairpin sequences
+* features: is a data frame with the features extracted from hairpyn sequences,
+one sequence per row and one numeric feature per column. The hairpin sequences
 can be extracted from a raw genome using HExtractor
-(<https://sourceforge.net/projects/sourcesinc/files/hextractor/>), and the
-features can be calculated using miRNAfe (<https://sourceforge.net/projects/sourcesinc/files/mirnafe/> or <http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/>). The whole pipeline consist on extract the hairpins from a raw genome in fasta format. The output, also in fasta format is the input to miRNAfe, which as result gives a comma separate 
-file that can be easily load into R.
+(<https://sourceforge.net/projects/sourcesinc/files/hextractor/>),
+and the features can be calculated using miRNAfe
+(<https://sourceforge.net/projects/sourcesinc/files/mirnafe/> or
+<http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/>). The whole pipeline
+consist on extract the hairpins from a raw genome in fasta format. The output,
+also in fasta format is the input to miRNAfe, which as result gives a comma
+separate file that can be easily load into R.
 
-* labels: is a numeric vector where the i-th element has a value of 1 if it is a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an unknown sequence that has to be classified (predicted) by the method.
+* labels: is a numeric vector where the i-th element has a value of 1 if it is
+a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an
+unknown sequence that has to be classified (predicted) by the method.
 
-The data provided with the package can be used to test miRNAss. This small dataset is composed of a small set of features extracted from 1000 hairpins randomly extracted from C. elegans hairpins. To use miRNAss with this dataset, first construct the label vector with the CLASS column
+The data provided with the package can be used to test miRNAss. This small
+dataset is composed of a small set of features extracted from 1000 hairpins
+randomly extracted from C. elegans hairpins. To use miRNAss with this dataset,
+first construct the label vector with the CLASS column
 ```{r}
 y = as.numeric(celegans$CLASS)*2 - 1
 ```
@@ -74,19 +99,23 @@ For more help about all the parameters and a full example execute:
 help(miRNAss)
 ```
 # Datasets and test scripts
-A set of experiments and comparisons with other methods can be done. The scripts and the data of these experiments can be found in:
+A set of experiments and comparisons with other methods can be done. The
+scripts and the data of these experiments can be found in:
 
 <http://sourceforge.net/projects/sourcesinc/files/mirnass/experiment_scripts.zip>
 
-To run these tests, after unzip the file, set this directory as the working directory and simply run each script with the function 'source':
+To run these tests, after unzip the file, set this directory as the working
+directory and simply run each script with the function 'source':
 
 ```{r, eval=FALSE}
 setwd('experiment_scripts')
 source('2_delta-mirBase.R')
 ```
 
-This will generate one csv file for each test in the ???results??? folder. It is important to point that most of these experiments are computationally expensive and could take quite a while (about 40 minutes for the experiment 2_delta-mirBase.R in an intel i7 PC).
-You can plot the results executing:
+This will generate one csv file for each test in the 'results' folder. It is
+important to point that most of these experiments are computationally expensive
+and could take quite a while (about 40 minutes for the experiment
+2_delta-mirBase.R in an intel i7 PC). You can plot the results executing:
 
 ```{r, eval=FALSE}
 source('plotResults.R')

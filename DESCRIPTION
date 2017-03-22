@@ -17,20 +17,21 @@ Description: MiRNAss is a machine learning method specifically designed for
 License: Apache License 2.0
 Encoding: UTF-8
 LazyData: true
-Suggest: 
-    S4Vectors
+Suggest:
+    S4Vectors,
 Imports:
     Matrix,
     RSpectra,
     CORElearn,
     Rcpp,
+    knitr,
+    rmarkdown,
     stats
 LinkingTo: Rcpp
-VignetteBuilder: knitr
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
-Roxygen: list(roclets = c('rd', 'collate', 'namespace', 'vignettes'))
 biocViews:
     Classification,
     GraphAndNetwork,
     GenomeAnnotation
+VignetteBuilder: knitr
