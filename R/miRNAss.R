@@ -38,22 +38,22 @@
 #' minimum negative score.
 #' @examples
 #' # First construct the label vector with the CLASS column
-#' 	y = as.numeric(celegans$CLASS)*2 - 1
+#' y = as.numeric(celegans$CLASS)*2 - 1
 #'
 #' # Remove some labels to make a test
-#' 	y[sample(which(y>0),200)] = 0
-#' 	y[sample(which(y<0),700)] = 0
+#' y[sample(which(y>0),200)] = 0
+#' y[sample(which(y<0),700)] = 0
 #'
 #' # Take all the features but remove the label column
-#' 	x = subset(celegans, select = -CLASS)
+#' x = subset(celegans, select = -CLASS)
 #'
 #' # Call miRNAss with default parameters
-#'  p = miRNAss(x,y)
+#' p = miRNAss(x,y)
 #'
 #' # Calculate some performance measures
-#'  SE = mean(p[ celegans$CLASS & y==0] > 0)
-#'  SP = mean(p[!celegans$CLASS & y==0] < 0)
-#'  cat("Sensitivity: ", SE, "\nSpecificity: ", SP, "\n")
+#' SE = mean(p[ celegans$CLASS & y==0] > 0)
+#' SP = mean(p[!celegans$CLASS & y==0] < 0)
+#' cat("Sensitivity: ", SE, "\nSpecificity: ", SP, "\n")
 #'
 #' @importFrom stats var
 #' @importFrom CORElearn attrEval
@@ -62,15 +62,15 @@
 #' @importFrom Rcpp evalCpp
 #' @useDynLib miRNAss
 #' @export
-miRNAss = function(x, y,
-                   nEigenVectors = min(400, round(nrow(x) / 5)),
-                   nNearestNeighbor = 10,
-                   missPenalization = 1,
-                   scallingMethod = "relief",
-                   positiveProp = NULL,
-                   neg2label = 0.05,
-                   thresholdObjective = "Gm",
-                   threadNumber = NA) {
+miRNAss =  function(x, y,
+                    nEigenVectors = min(400, round(nrow(x) / 5)),
+                    nNearestNeighbor = 10,
+                    missPenalization = 1,
+                    scallingMethod = "relief",
+                    positiveProp = NULL,
+                    neg2label = 0.05,
+                    thresholdObjective = "Gm",
+                    threadNumber = NA) {
     nx = length(y)
     nEigenVectors = min(nEigenVectors, round(nx / 2))
     nNearestNeighbor = min(nNearestNeighbor, nx / 4)
@@ -82,8 +82,8 @@ miRNAss = function(x, y,
         if (is.null(positiveProp))
             positiveProp = 2 * sum(y > 0) / sum(y == 0)
         if (scallingMethod == "relief") {
-            warning(paste0("Relief cannot be used without negative examples,",
-                           " switching to whitening"))
+            warning(paste0("Relief cannot be used without negative ",
+                           "examples, switching to whitening"))
             scallingMethod = "whitening"
         }
     }
