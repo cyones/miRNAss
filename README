@@ -1,4 +1,4 @@
-This is the version 0.99 of the miRNAss R package
+This is the version 0.99.1 of the miRNAss R package
 -------------------------------------------------
 MiRNAss is a machine learning method specifically designed for pre-miRNA prediction. It takes advantage of unlabeled sequences to improve the prediction rates even when there are just a few positive examples, and when the negative examples are unreliable or are not good representatives of its class. Furthermore, the method can automatically search for negative examples if the user is unable to provide them. MiRNAss can find a good boundary to divide the pre-miRNAs from other groups of sequences; it automatically optimizes the threshold that defines the classes boundaries, and thus, it is robust to high class imbalance. Each step of the method is scalable and can handle large volumes of data.
 
@@ -10,14 +10,15 @@ Contact
 
 Package installation
 --------------------
-This library uses some well-known CRAN R packages. The following must be installed:
+This library uses some well-known R packages. The following must be installed:
 
 CRAN packages:
 - RSpectra (Version >= 0.12-0).
 - CORElearn, (Version >= 1.48.0).
 - Rcpp (Version >= 0.12.8).
+- S4Vectors (Version >= 0.12.2).
 
-The library was developed and tested in R version 3.3.2.
+The library was developed and tested in R version 3.3.2 and 3.4.0.
 
 To install miRNAss download the package file (called miRNAss_x.xx.x_linux.tar.gz for Linux machines and miRNAss_x.xx.x_windows.zip for Windows) from SourceForge. Then, using an IDE such as RStudio, install it as a local package. If you do not have an IDE, install the package from R console with the following commands:
 
