@@ -18,9 +18,9 @@ NumericMatrix edge_list_knn(const matrix& x, const std::vector<double>& y,
 NumericMatrix edgeListKnn(const NumericMatrix& x, const NumericVector& y,
                           const int nn, const int threadNumber) {
 	matrix X(x.nrow());
-	for(int i=0; i<X.size(); i++) {
+	for(unsigned int i=0; i<X.size(); i++) {
 		X[i].resize(x.ncol());
-		for(int j=0; j<X[i].size(); j++) {
+		for(unsigned int j=0; j<X[i].size(); j++) {
 			X[i][j] = x(i,j);
 		}
 	}
@@ -108,7 +108,7 @@ void order_statistic(edge_iter start, edge_iter end, int k) {
 
 NumericMatrix edge_list_knn(const matrix& x, const std::vector<double>& y,
                             const int nn) {
-	const int nrow = x.size(), ncol=x[0].size();
+	const unsigned int nrow = x.size(), ncol=x[0].size();
 	std::vector<edge> all;
 	all.reserve(nn*nrow);
 
@@ -124,9 +124,9 @@ NumericMatrix edge_list_knn(const matrix& x, const std::vector<double>& y,
 
 	edge_iter ee=e.begin(), eb;
 #pragma omp for schedule(static)
-	for(int i=0; i<nrow; i++) {
+	for(unsigned int i=0; i<nrow; i++) {
 		eb=ee;
-		for(int j=0; j<i; j++) {
+		for(unsigned int j=0; j<i; j++) {
 			if(y[i]*y[j] >= 0) {
 				double d=0;
 				for(int k=0;k<ncol;k++)
@@ -134,10 +134,10 @@ NumericMatrix edge_list_knn(const matrix& x, const std::vector<double>& y,
 				(ee++)->assign(d, j, i);
 			}
 		}
-		for(int j=i+1; j<nrow; j++) {
+		for(unsigned int j=i+1; j<nrow; j++) {
 			if(y[i]*y[j] >= 0) {
 				double d=0;
-				for(int k=0;k<ncol;k++)
+				for(unsigned int k=0;k<ncol;k++)
 					d += pow(x[i][k] - x[j][k],2);
 				(ee++)->assign(d, i, j);
 			}

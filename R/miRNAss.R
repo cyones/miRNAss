@@ -82,8 +82,8 @@ miRNAss =  function(x, y,
         if (is.null(positiveProp))
             positiveProp = 2 * sum(y > 0) / sum(y == 0)
         if (scallingMethod == "relief") {
-            warning(paste0("Relief cannot be used without negative ",
-                           "examples, switching to whitening"))
+            warning( paste0("Relief cannot be used without negative ",
+                            "examples, switching to whitening"))
             scallingMethod = "whitening"
         }
     }
@@ -145,12 +145,12 @@ miRNAss =  function(x, y,
 
 .eigenDecom = function(A, nev) {
     nx = nrow(A)
-    D = sparseMatrix(i = 1:nx,
-                     j = 1:nx,
-                     x = 1 / sqrt(colSums(A)))
-    Lnorm = sparseMatrix(i = 1:nx,
-                         j = 1:nx,
-                         x = rep(1, nx)) - D %*% A %*% D
+    D  =   sparseMatrix(i = 1:nx,
+                        j = 1:nx,
+                        x = 1 / sqrt(colSums(A)))
+    Lnorm = sparseMatrix(   i = 1:nx,
+                            j = 1:nx,
+                            x = rep(1, nx)) - D %*% A %*% D
 
     lambda = eigs_sym(
         A = Lnorm,
@@ -223,9 +223,9 @@ miRNAss =  function(x, y,
 }
 
 .reliefScalling = function(x, y, nn) {
-    x = x[, apply(X = x,
-                  MARGIN = 2,
-                  FUN = var) > .Machine$double.eps]
+    x = x[, apply(  X = x,
+                    MARGIN = 2,
+                    FUN = var) > .Machine$double.eps]
     x = scale(x)
 
     # If there any negative example, use the unlabeled
