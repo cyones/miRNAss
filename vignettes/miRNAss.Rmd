@@ -4,8 +4,8 @@ author: "Cristian Yones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{miRNAss package}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{miRNAss package}
   %\VignetteEncoding{UTF-8}
 ---
 
