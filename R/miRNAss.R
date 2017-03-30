@@ -62,14 +62,10 @@
 #' @importFrom Rcpp evalCpp
 #' @useDynLib miRNAss
 #' @export
-miRNAss =  function(x, y,
-                    nEigenVectors = min(400, round(nrow(x) / 5)),
-                    nNearestNeighbor = 10,
-                    missPenalization = 1,
-                    scallingMethod = "relief",
-                    positiveProp = NULL,
-                    neg2label = 0.05,
-                    thresholdObjective = "Gm",
+miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
+                    nNearestNeighbor = 10, missPenalization = 1,
+                    scallingMethod = "relief", positiveProp = NULL,
+                    neg2label = 0.05, thresholdObjective = "Gm",
                     threadNumber = NA) {
     nx = length(y)
     nEigenVectors = min(nEigenVectors, round(nx / 2))
@@ -251,15 +247,12 @@ miRNAss =  function(x, y,
         )
     )
 
-    variable = apply(X = x[lab, ],
-                     MARGIN = 2,
-                     FUN = var) > .Machine$double.eps
+    variable = apply(X = x[lab, ], MARGIN = 2, FUN = var) > .Machine$double.eps
 
     w = rep(0, ncol(x))
     w[variable] = attrEval(
         CLASS ~ .,
-        data = data.frame(x[lab, variable],
-                          CLASS = as.factor(y[lab])),
+        data = data.frame( x[lab, variable], CLASS = as.factor(y[lab])),
         estimator = "ReliefFexpRank",
         kNearestExpRank = nn,
         numAttrProportionEqual = 0.0,
