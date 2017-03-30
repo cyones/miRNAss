@@ -100,9 +100,9 @@ help(miRNAss)
 ```
 # Datasets and test scripts
 A set of experiments and comparisons with other methods can be done. The
-scripts and the data of these experiments can be found in:
+scripts and the data of these experiments are contained in the file miRNAss-experiments.zip that can be found in:
 
-<http://sourceforge.net/projects/sourcesinc/files/mirnass/experiment_scripts.zip>
+<https://sourceforge.net/projects/sourcesinc/files/mirnass/>
 
 To run these tests, after unzip the file, set this directory as the working
 directory and simply run each script with the function 'source':
