@@ -1,7 +1,7 @@
 Package: miRNAss
 Type: Package
 Title: Genome-wide discovery of pre-miRNAs with few labeled examples
-Version: 0.99.5
+Version: 0.99.6
 Author: Cristian Yones
 Maintainer: Cristian Yones <cyones@sinc.unl.edu.ar>
 Description: MiRNAss is a machine learning method specifically designed for 
