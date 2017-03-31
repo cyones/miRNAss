@@ -10,4 +10,5 @@ News for package miRNAss
     + OpenMP desactivated on Mac OS.
 * Changes in miRNAss 0.99.3 (2017-03-23)
     + Resolved some warnings in c++ code.
-
+* Changes in miRNAss 0.99.7 (2017-03-31)
+    + Move the vignettes from markdown to Latex
