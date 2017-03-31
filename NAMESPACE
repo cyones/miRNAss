@@ -2,7 +2,6 @@
 
 export(miRNAss)
 import(Matrix)
-import(knitr)
 importFrom(CORElearn,attrEval)
 importFrom(RSpectra,eigs)
 importFrom(RSpectra,eigs_sym)
