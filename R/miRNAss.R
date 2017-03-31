@@ -55,10 +55,10 @@
 #' SP = mean(p[!celegans$CLASS & y==0] < 0)
 #' cat("Sensitivity: ", SE, "\nSpecificity: ", SP, "\n")
 #'
+#' @import Matrix
 #' @importFrom stats var
 #' @importFrom CORElearn attrEval
 #' @importFrom RSpectra eigs_sym eigs
-#' @import Matrix
 #' @importFrom Rcpp evalCpp
 #' @useDynLib miRNAss
 #' @export
