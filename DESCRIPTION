@@ -1,36 +1,31 @@
 Package: miRNAss
 Type: Package
 Title: Genome-wide discovery of pre-miRNAs with few labeled examples
-Version: 0.99.6
+Version: 0.99.7
 Author: Cristian Yones
 Maintainer: Cristian Yones <cyones@sinc.unl.edu.ar>
-Description: MiRNAss is a machine learning method specifically designed for 
+Description: MiRNAss is a machine learning method specifically designed for
     pre-miRNA prediction. It takes advantage of unlabeled sequences to improve
-    the prediction rates even when there are just a few positive examples, when 
+    the prediction rates even when there are just a few positive examples, when
     the negative examples are unreliable or are not good representatives of
     its class. Furthermore, the method can automatically search for negative
     examples if the user is unable to provide them. MiRNAss can find a good
-    boundary to divide the pre-miRNAs from other groups of sequences; it 
-    automatically optimizes the threshold that defines the classes boundaries, 
+    boundary to divide the pre-miRNAs from other groups of sequences; it
+    automatically optimizes the threshold that defines the classes boundaries,
     and thus, it is robust to high class imbalance. Each step of the method is
     scalable and can handle large volumes of data.
 License: Apache License 2.0
 Encoding: UTF-8
 LazyData: true
-Suggest:
-    S4Vectors
 Imports:
-    knitr,
     Matrix,
-    RSpectra,
-    CORElearn,
+    stats,
     Rcpp,
-    stats
+    CORElearn,
+    RSpectra,
 LinkingTo: Rcpp
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
-biocViews:
-    Classification,
+biocViews: Classification,
     GraphAndNetwork,
     GenomeAnnotation
-VignetteBuilder: knitr
