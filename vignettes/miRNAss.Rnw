@@ -20,13 +20,15 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 %------------------------------------------------------------
-\title{\Rpackage{miRNAss}: Genome-wide pre-miRNA discovery from few labeled examples}
+\title{\Rpackage{miRNAss}: Genome-wide pre-miRNA discovery from few labeled 
+examples}
 %------------------------------------------------------------
 \author[1]{Cristian A. Yones (\url{cyones@sinc.unl.edu.ar})}
 \author[1]{Georgina Stegmayer}
 \author[1]{Diego H. Milone}
 
-\affil[1]{Research Institute for Signals, Systems and Computational Intelligence, sinc(\textit{i}), FICH-UNL, CONICET, Santa Fe (3000), Argentina.}
+\affil[1]{Research Institute for Signals, Systems and Computational
+Intelligence, sinc(\textit{i}), FICH-UNL, CONICET, Santa Fe (3000), Argentina.}
 
 \SweaveOpts{echo = TRUE, useFancyQuotes = FALSE, highlight=TRUE, tidy=TRUE, keep.space=TRUE, keep.blank.space=FALSE, keep.comment=TRUE}
 
@@ -67,19 +69,20 @@ miRNAss(features, labels)
 
 Where:
 \begin{itemize}
-\item \textbf{features}: is a data frame with the features extracted from hairpyn sequences,
-one sequence per row and one numeric feature per column. The hairpin sequences
-can be extracted from a raw genome using HExtractor
+\item \textbf{features}: is a data frame with the features extracted from
+hairpyn sequences, one sequence per row and one numeric feature per column.
+The hairpin sequences can be extracted from a raw genome using HExtractor
 (\url{https://sourceforge.net/projects/sourcesinc/files/hextractor/}),
 and the features can be calculated using miRNAfe
 (\url{https://sourceforge.net/projects/sourcesinc/files/mirnafe/} or
-\url{http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/}). The whole pipeline
-consist on extract the hairpins from a raw genome in fasta format. The output,
-also in fasta format is the input to miRNAfe, which as result gives a comma
-separate file that can be easily load into R.
-\item \textbf{labels}: is a numeric vector where the i-th element has a value of 1 if it is
-a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero if it is an
-unknown sequence that has to be classified (predicted) by the method.
+\url{http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/}). The whole
+pipeline consist on extract the hairpins from a raw genome in fasta format.
+The output, also in fasta format is the input to miRNAfe, which as result gives
+a comma separate file that can be easily load into R.
+\item \textbf{labels}: is a numeric vector where the i-th element has a value
+of 1 if it is a well-known pre-miRNA, a -1 if it is not a pre-miRNA, and zero
+if it is an unknown sequence that has to be classified (predicted) by
+the method.
 \end{itemize}
 
 The data provided with the package can be used to test miRNAss. This small
@@ -121,7 +124,8 @@ help(miRNAss)
 
 \section{Extra datasets and test scripts}
 A set of experiments and comparisons with other methods can be done. The
-scripts and the data of these experiments are contained in the file miRNAss-experiments.zip that can be found in:
+scripts and the data of these experiments are contained in the file
+miRNAss-experiments.zip that can be found in:
 
 \url{https://sourceforge.net/projects/sourcesinc/files/mirnass/}
 
@@ -143,5 +147,11 @@ source('plotResults.R')
 @
 
 The figures will be saved in the folder 'results'.
+
+\section{Software used}
+
+<<sessionInfo, echo=FALSE, results=tex>>=
+toLatex(sessionInfo())
+@
 
 \end{document}
