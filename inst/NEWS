@@ -12,3 +12,9 @@ News for package miRNAss
     + Resolved some warnings in c++ code.
 * Changes in miRNAss 0.99.7 (2017-03-31)
     + Move the vignettes from markdown to Latex
+* Changes in miRNAss 0.99.8 (2017-04-07)
+    + More descriptive argument names
+    + Replaced 1:n expressions with seq function
+    + Removed garbage collections
+    + Change the '=' for '<-'
+    + Added a description to the main function
