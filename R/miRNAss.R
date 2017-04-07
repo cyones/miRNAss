@@ -1,8 +1,14 @@
-#' Main function of miRNAss package
-#' @param x Data frame with features extracted from stem-loop sequences.
-#' @param y Vector of labels of the stem-loop sequences. It must have -1 for
-#' negative examples, 1 for known miRNAs and zero for the unknown sequences
-#' (the ones that would be classificated).
+#' This is the main function of the miRNAss package and implements the miRNA
+#' prediction method, It takes as main parameters a matrix with numerical
+#' features extracted from RNA hairpins and an incomplent vector of labels
+#' where the positive number represents known miRNAs, the negative are
+#' not-miRNA hairpins and te zero values are unknown sequences (those that
+#' will be classified). As a results it returns a complete label vector.
+#' @param sequenceFeatures Data frame with features extracted from stem-loop
+#' sequences.
+#' @param sequenceLabels Vector of labels of the stem-loop sequences. It must
+#'  have -1 for negative examples, 1 for known miRNAs and zero for the unknown
+#'  sequences (the ones that would be classificated).
 #' @param nEigenVectors Number of eigen vectors used to aproximate the solution
 #' of the optimization problem. If the number is too low, smoother topographic
 #' solutions are founded, probabily losing SP but achieving a better SE.
@@ -55,138 +61,139 @@
 #' SP = mean(p[!celegans$CLASS & y==0] < 0)
 #' cat("Sensitivity: ", SE, "\nSpecificity: ", SP, "\n")
 #'
-#' @import Matrix
-#' @importFrom stats var
+#' @import BiocGenerics
+#' @importFrom Matrix sparseMatrix colSums
 #' @importFrom CORElearn attrEval
 #' @importFrom RSpectra eigs_sym eigs
 #' @importFrom Rcpp evalCpp
 #' @useDynLib miRNAss
 #' @export
-miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
+miRNAss =  function(sequenceFeatures, sequenceLabels,
+                    nEigenVectors = min(400, round(nrow(sequenceFeatures) / 5)),
                     nNearestNeighbor = 10, missPenalization = 1,
                     scallingMethod = "relief", positiveProp = NULL,
                     neg2label = 0.05, thresholdObjective = "Gm",
                     threadNumber = NA) {
-    nx = length(y)
-    nEigenVectors = min(nEigenVectors, round(nx / 2))
-    nNearestNeighbor = min(nNearestNeighbor, nx / 4)
+    nx <- length(sequenceLabels)
+    nEigenVectors <- min(nEigenVectors, round(nx / 2))
+    nNearestNeighbor <- min(nNearestNeighbor, nx / 4)
 
-    if (any(y < 0)) {
+    if (any(sequenceLabels < 0)) {
         if (is.null(positiveProp))
-            positiveProp = sum(y > 0) / sum(y != 0)
+            positiveProp <- sum(sequenceLabels > 0) / sum(sequenceLabels != 0)
     } else {
         if (is.null(positiveProp))
-            positiveProp = 2 * sum(y > 0) / sum(y == 0)
+            positiveProp <- 2 * sum(sequenceLabels > 0)/sum(sequenceLabels == 0)
         if (scallingMethod == "relief") {
             warning( paste0("Relief cannot be used without negative ",
                             "examples, switching to whitening"))
-            scallingMethod = "whitening"
+            scallingMethod <- "whitening"
         }
     }
 
     if (scallingMethod == "relief")
-        x <- .reliefScalling(x = x, y = y, nn = nNearestNeighbor)
+        sequenceFeatures <- .reliefScalling(x = sequenceFeatures,
+                                            y = sequenceLabels,
+                                            nn = nNearestNeighbor)
     else if (scallingMethod == "whitening")
-        x <- scale(x)
+        sequenceFeatures <- scale(sequenceFeatures)
     else if (scallingMethod != "none")
         stop("Invalid scalling method")
 
 
-    A = .adjacencyMatrixKNN(x = x, y = y, nn = nNearestNeighbor,
+    A <- .adjacencyMatrixKNN(x = sequenceFeatures, y = sequenceLabels,
+                            nn = nNearestNeighbor,
                             threadNumber = threadNumber)
 
-    desc = .eigenDecom(A, nEigenVectors)
+    desc <- .eigenDecom(A, nEigenVectors)
 
-    if (!any(y < 0))
-        y = .searchNegatives(
+    if (!any(sequenceLabels < 0))
+        sequenceLabels <- .searchNegatives(
             A = A,
-            y = y,
+            y = sequenceLabels,
             posFrac = positiveProp,
             prop2label = neg2label
         )
 
-    pred = .solveOptim(desc, y, positiveProp, missPenalization)
+    pred <- .solveOptim(desc, sequenceLabels, positiveProp, missPenalization)
 
     if (thresholdObjective == "Gm")
-        pred = pred - .calcThreshold(pred, y, TRUE)
+        pred <- pred - .calcThreshold(pred, sequenceLabels, TRUE)
     else if (thresholdObjective == "G")
-        pred = pred - .calcThreshold(pred, y, FALSE)
+        pred <- pred - .calcThreshold(pred, sequenceLabels, FALSE)
     else if (thresholdObjective != "zero")
         stop("Invalid threshold objective")
 
-    pos = pred > 0
-    pred[pos] = pred[pos] / abs(max(pred[pos]))
-    pred[!pos] = pred[!pos] / abs(min(pred[!pos]))
+    pos <- pred > 0
+    pred[pos] <- pred[pos] / abs(max(pred[pos]))
+    pred[!pos] <- pred[!pos] / abs(min(pred[!pos]))
     return(pred)
 }
 
-.searchNegatives = function(A, y, prop2label, posFrac) {
-    n2label = ceiling(prop2label * (1 - posFrac) * sum(y == 0))
-    d = .calcDistance(
+.searchNegatives <- function(A, y, prop2label, posFrac) {
+    n2label <- ceiling(prop2label * (1 - posFrac) * sum(y == 0))
+    d <- .calcDistance(
         p = attr(A, "p"),
         idx = attr(A, "i"),
         x = attr(A, "x"),
         y = y
     )
-    p = exp(1 - d) - 1
-    sel = sample(
-        x = 1:length(y),
+    p <- exp(1 - d) - 1
+    sel <- sample(
+        x = seq(1, length(y)),
         prob = p,
         replace = FALSE,
         size = n2label
     )
-    y[sel] = -1
+    y[sel] <- -1
     return(y)
 }
 
-.eigenDecom = function(A, nev) {
-    nx = nrow(A)
-    D  =   sparseMatrix(i = 1:nx,
-                        j = 1:nx,
+.eigenDecom <- function(A, nev) {
+    nx <- nrow(A)
+    D  <-   sparseMatrix(i = seq(1, nx),
+                        j = seq(1, nx),
                         x = 1 / sqrt(colSums(A)))
-    Lnorm = sparseMatrix(   i = 1:nx,
-                            j = 1:nx,
+    Lnorm <- sparseMatrix(   i = seq(1, nx),
+                            j = seq(1, nx),
                             x = rep(1, nx)) - D %*% A %*% D
 
-    lambda = eigs_sym(
+    lambda <- eigs_sym(
         A = Lnorm,
         k = nev + 1,
         which = "SM",
         opts = list(tol = 1e-6)
     )
 
-    U = lambda$vectors[, seq(nev, 1, -1)]
-    D = lambda$values[seq(nev, 1, -1)]
+    U <- lambda$vectors[, seq(nev, 1, -1)]
+    D <- lambda$values[seq(nev, 1, -1)]
     return(list(U = U, D = D))
 }
 
-.solveOptim = function(desc, y, posFrac, missWeight) {
-    nx = length(y)
-    posl = which(y > 0)
-    negl = which(y < 0)
+.solveOptim <- function(desc, y, posFrac, missWeight) {
+    nx <- length(y)
+    posl <- which(y > 0)
+    negl <- which(y < 0)
 
-    target = rep(0, nx)
-    target[posl] = sqrt((1 - posFrac) / posFrac)
-    target[negl] = -sqrt(posFrac / (1 - posFrac))
+    target <- rep(0, nx)
+    target[posl] <- sqrt((1 - posFrac) / posFrac)
+    target[negl] <- -sqrt(posFrac / (1 - posFrac))
 
-    C = abs(y)
+    C <- abs(y)
 
-    G = sweep(desc$U, MARGIN = 1, C, `*`)
-    G = missWeight * t(desc$U) %*% G
-    diag(G) = diag(G) + desc$D
-    gc()
-    b = as.matrix(C * target)
-    b = t(desc$U) %*% b
-    b = missWeight * b
+    G <- sweep(desc$U, MARGIN = 1, C, `*`)
+    G <- missWeight * t(desc$U) %*% G
+    diag(G) <- diag(G) + desc$D
+    b <- as.matrix(C * target)
+    b <- t(desc$U) %*% b
+    b <- missWeight * b
 
-    gc()
-
-    M = rbind(cbind(G, -diag(
+    M <- rbind(cbind(G, -diag(
         nrow = nrow(G), ncol = ncol(G)
     )),
     cbind(-b %*% t(b) / nx, G))
 
-    lambda = Re(eigs(
+    lambda <- Re(eigs(
         A = M,
         k = 1,
         which = "LM",
@@ -195,19 +202,17 @@ miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
             list(maxitr = 10000, retvec = FALSE)
     )$values)
 
-    w = solve(G - diag(lambda, nrow(G), ncol(G)), b)
+    w <- solve(G - diag(lambda, nrow(G), ncol(G)), b)
     return(desc$U %*% w)
 }
 
-.adjacencyMatrixKNN = function(x, y = rep(0, nrow(x)), nn, threadNumber) {
+.adjacencyMatrixKNN <- function(x, y = rep(0, nrow(x)), nn, threadNumber) {
     if (!is.matrix(x))
-        x = as.matrix(x)
+        x <- as.matrix(x)
     if (is.na(threadNumber))
-        threadNumber = 0
-    el = .edgeListKnn(x, y, nn, threadNumber)
-    res = {
-    }
-    res = sparseMatrix(
+        threadNumber <- 0
+    el <- .edgeListKnn(x, y, nn, threadNumber)
+    res <- sparseMatrix(
         i = c(el[, 1], el[, 2]),
         j = c(el[, 2], el[, 1]),
         x = c(el[, 3], el[, 3]),
@@ -218,23 +223,23 @@ miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
     return(res)
 }
 
-.reliefScalling = function(x, y, nn) {
-    x = x[, apply(  X = x,
+.reliefScalling <- function(x, y, nn) {
+    x <- x[, apply(  X = x,
                     MARGIN = 2,
                     FUN = var) > .Machine$double.eps]
-    x = scale(x)
+    x <- scale(x)
 
     # If there any negative example, use the unlabeled
-    plab = which(y > 0)
+    plab <- which(y > 0)
     if (any(y < 0))
-        nlab = which(y < 0)
+        nlab <- which(y < 0)
     else
-        nlab = which(y == 0)
+        nlab <- which(y == 0)
 
     # An imbalance of 1:2 as maximum
-    pnum = min(length(plab), 2 * length(nlab))
-    nnum = min(length(nlab), 2 * length(plab))
-    lab = c(
+    pnum <- min(length(plab), 2 * length(nlab))
+    nnum <- min(length(nlab), 2 * length(plab))
+    lab <- c(
         sample(
             x = plab,
             size = pnum,
@@ -247,10 +252,10 @@ miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
         )
     )
 
-    variable = apply(X = x[lab, ], MARGIN = 2, FUN = var) > .Machine$double.eps
+    variable <- apply(X = x[lab, ], MARGIN = 2, FUN = var) > .Machine$double.eps
 
-    w = rep(0, ncol(x))
-    w[variable] = attrEval(
+    w <- rep(0, ncol(x))
+    w[variable] <- attrEval(
         CLASS ~ .,
         data = data.frame( x[lab, variable], CLASS = as.factor(y[lab])),
         estimator = "ReliefFexpRank",
@@ -258,9 +263,9 @@ miRNAss =  function(x, y, nEigenVectors = min(400, round(nrow(x) / 5)),
         numAttrProportionEqual = 0.0,
         numAttrProportionDifferent = 1.0
     )
-    x = x[, w > 0]
-    w = w[w > 0]
-    w = w / max(w)
-    x = sweep(x, MARGIN = 2, w, `*`)
+    x <- x[, w > 0]
+    w <- w[w > 0]
+    w <- w / max(w)
+    x <- sweep(x, MARGIN = 2, w, `*`)
     return(x)
 }
