@@ -2,19 +2,25 @@
 % Please edit documentation in R/miRNAss.R
 \name{miRNAss}
 \alias{miRNAss}
-\title{Main function of miRNAss package}
+\title{This is the main function of the miRNAss package and implements the miRNA
+prediction method, It takes as main parameters a matrix with numerical
+features extracted from RNA hairpins and an incomplent vector of labels
+where the positive number represents known miRNAs, the negative are
+not-miRNA hairpins and te zero values are unknown sequences (those that
+will be classified). As a results it returns a complete label vector.}
 \usage{
-miRNAss(x, y, nEigenVectors = min(400, round(nrow(x)/5)),
-  nNearestNeighbor = 10, missPenalization = 1, scallingMethod = "relief",
-  positiveProp = NULL, neg2label = 0.05, thresholdObjective = "Gm",
-  threadNumber = NA)
+miRNAss(sequenceFeatures, sequenceLabels, nEigenVectors = min(400,
+  round(nrow(sequenceFeatures)/5)), nNearestNeighbor = 10,
+  missPenalization = 1, scallingMethod = "relief", positiveProp = NULL,
+  neg2label = 0.05, thresholdObjective = "Gm", threadNumber = NA)
 }
 \arguments{
-\item{x}{Data frame with features extracted from stem-loop sequences.}
+\item{sequenceFeatures}{Data frame with features extracted from stem-loop
+sequences.}
 
-\item{y}{Vector of labels of the stem-loop sequences. It must have -1 for
-negative examples, 1 for known miRNAs and zero for the unknown sequences
-(the ones that would be classificated).}
+\item{sequenceLabels}{Vector of labels of the stem-loop sequences. It must
+have -1 for negative examples, 1 for known miRNAs and zero for the unknown
+sequences (the ones that would be classificated).}
 
 \item{nEigenVectors}{Number of eigen vectors used to aproximate the solution
 of the optimization problem. If the number is too low, smoother topographic
@@ -60,7 +66,12 @@ positive score, and the negative scores are divided by the magnitud of the
 minimum negative score.
 }
 \description{
-Main function of miRNAss package
+This is the main function of the miRNAss package and implements the miRNA
+prediction method, It takes as main parameters a matrix with numerical
+features extracted from RNA hairpins and an incomplent vector of labels
+where the positive number represents known miRNAs, the negative are
+not-miRNA hairpins and te zero values are unknown sequences (those that
+will be classified). As a results it returns a complete label vector.
 }
 \examples{
 # First construct the label vector with the CLASS column
