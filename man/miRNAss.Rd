@@ -10,9 +10,9 @@ not-miRNA hairpins and te zero values are unknown sequences (those that
 will be classified). As a results it returns a complete label vector.}
 \usage{
 miRNAss(sequenceFeatures, sequenceLabels, nEigenVectors = min(400,
-  round(nrow(sequenceFeatures)/5)), nNearestNeighbor = 10,
-  missPenalization = 1, scallingMethod = "relief", positiveProp = NULL,
-  neg2label = 0.05, thresholdObjective = "Gm", threadNumber = NA)
+   round(nrow(sequenceFeatures)/5)), nNearestNeighbor = 10,
+   missPenalization = 1, scallingMethod = "relief", positiveProp = NULL,
+   neg2label = 0.05, thresholdObjective = "Gm", threadNumber = NA)
 }
 \arguments{
 \item{sequenceFeatures}{Data frame with features extracted from stem-loop
