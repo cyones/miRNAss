@@ -2,30 +2,24 @@
 % Please edit documentation in R/miRNAss.R
 \name{miRNAss}
 \alias{miRNAss}
-\title{This is the main function of the miRNAss package and implements the miRNA
-prediction method, It takes as main parameters a matrix with numerical
-features extracted from RNA hairpins and an incomplent vector of labels
-where the positive number represents known miRNAs, the negative are
-not-miRNA hairpins and te zero values are unknown sequences (those that
-will be classified). As a results it returns a complete label vector.}
+\title{MiRNAss: Genome-wide pre-miRNA discovery from few labeled examples}
 \usage{
-miRNAss(sequenceFeatures, sequenceLabels, nEigenVectors = min(400,
-   round(nrow(sequenceFeatures)/5)), nNearestNeighbor = 10,
-   missPenalization = 1, scallingMethod = "relief", positiveProp = NULL,
-   neg2label = 0.05, thresholdObjective = "Gm", threadNumber = NA)
+miRNAss(sequenceFeatures = NULL, sequenceLabels, AdjMatrix = NULL,
+  nNearestNeighbor = 10, missPenalization = 1, scallingMethod = "relief",
+  thresholdObjective = "Gm", neg2label = 0.05, positiveProp = NULL,
+  nEigenVectors = min(400, round(length(sequenceLabels)/5)),
+  threadNumber = NA)
 }
 \arguments{
 \item{sequenceFeatures}{Data frame with features extracted from stem-loop
-sequences.}
+sequences. It is not required if the adjacency matrix is provided.}
 
 \item{sequenceLabels}{Vector of labels of the stem-loop sequences. It must
 have -1 for negative examples, 1 for known miRNAs and zero for the unknown
 sequences (the ones that would be classificated).}
 
-\item{nEigenVectors}{Number of eigen vectors used to aproximate the solution
-of the optimization problem. If the number is too low, smoother topographic
-solutions are founded, probabily losing SP but achieving a better SE.
-Generally, 400 are enought.}
+\item{AdjMatrix}{Sparse adjacency matrix representeing the graph.
+If sequence features are provided it is ignored.}
 
 \item{nNearestNeighbor}{Number of nearest neighbors in the KNN graph. The
 default value is 10.}
@@ -40,18 +34,24 @@ option). The first option does nothing, the second calls the built-in
 function 'scale' and the last one uses the ReliefFexpRank algorithm from
 the coreLearn package.}
 
-\item{positiveProp}{Expected proportion of positive sequences. If it is not
-provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there
-are negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.}
+\item{thresholdObjective}{Performance measure that would be optimized when
+estimating the threshold. The options are 'Gm' (geometric mean of the SE and
+the SP), 'G' (geometric mean of the SE and the precision), 'F1' (harmonic
+mean between SE and the precision) and 'none' (do not calculate any
+threshold). The default value is 'Gm'.}
 
 \item{neg2label}{Proportion of unlabeled stem-loops that would be labeled as
 negative with the automatic method to start the classification algorithm.
 The default is 0.05.}
 
-\item{thresholdObjective}{Performance measure that would be optimized when
-estimating the threshold. The options are 'Gm' (geometric mean of the SE and
-the SP), 'G' (geometric mean of the SE and the precision) and 'none' (do not
-calculate any threshold). The default value is 'Gm'.}
+\item{positiveProp}{Expected proportion of positive sequences. If it is not
+provided by the user, is estimated as sum(y > 0) / sum(y != 0) when there
+are negative examples or as 2 * sum(y > 0) / sum(y == 0) when not.}
+
+\item{nEigenVectors}{Number of eigen vectors used to aproximate the solution
+of the optimization problem. If the number is too low, smoother topographic
+solutions are founded, probabily losing SP but achieving a better SE.
+Generally, 400 are enought.}
 
 \item{threadNumber}{Number of threads used for the calculations. If it is NA
 leave OpenMP decide the number (may vary across different platforms).}

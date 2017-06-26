@@ -5,8 +5,8 @@
     .Call('miRNAss_calcDistance', PACKAGE = 'miRNAss', p, idx, x, y)
 }
 
-.calcThreshold <- function(ye, yt, Gm) {
-    .Call('miRNAss_calcThreshold', PACKAGE = 'miRNAss', ye, yt, Gm)
+.calcThreshold <- function(ye, yt, objective) {
+    .Call('miRNAss_calcThreshold', PACKAGE = 'miRNAss', ye, yt, objective)
 }
 
 .edgeListKnn <- function(x, y, nn, threadNumber) {

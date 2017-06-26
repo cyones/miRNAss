@@ -20,15 +20,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcThreshold
-double calcThreshold(const NumericVector& ye, const NumericVector& yt, bool Gm);
-RcppExport SEXP miRNAss_calcThreshold(SEXP yeSEXP, SEXP ytSEXP, SEXP GmSEXP) {
+double calcThreshold(const NumericVector& ye, const NumericVector& yt, int objective);
+RcppExport SEXP miRNAss_calcThreshold(SEXP yeSEXP, SEXP ytSEXP, SEXP objectiveSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericVector& >::type ye(yeSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type yt(ytSEXP);
-    Rcpp::traits::input_parameter< bool >::type Gm(GmSEXP);
-    rcpp_result_gen = Rcpp::wrap(calcThreshold(ye, yt, Gm));
+    Rcpp::traits::input_parameter< int >::type objective(objectiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(calcThreshold(ye, yt, objective));
     return rcpp_result_gen;
 END_RCPP
 }

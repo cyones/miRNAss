@@ -1,3 +1,5 @@
+#' MiRNAss: Genome-wide pre-miRNA discovery from few labeled examples
+#'
 #' This is the main function of the miRNAss package and implements the miRNA
 #' prediction method, It takes as main parameters a matrix with numerical
 #' features extracted from RNA hairpins and an incomplent vector of labels
@@ -5,10 +7,12 @@
 #' not-miRNA hairpins and te zero values are unknown sequences (those that
 #' will be classified). As a results it returns a complete label vector.
 #' @param sequenceFeatures Data frame with features extracted from stem-loop
-#' sequences.
+#' sequences. It is not required if the adjacency matrix is provided.
 #' @param sequenceLabels Vector of labels of the stem-loop sequences. It must
 #'  have -1 for negative examples, 1 for known miRNAs and zero for the unknown
 #'  sequences (the ones that would be classificated).
+#' @param AdjMatrix Sparse adjacency matrix representeing the graph.
+#' If sequence features are provided it is ignored.
 #' @param nEigenVectors Number of eigen vectors used to aproximate the solution
 #' of the optimization problem. If the number is too low, smoother topographic
 #' solutions are founded, probabily losing SP but achieving a better SE.
@@ -31,8 +35,9 @@
 #' The default is 0.05.
 #' @param thresholdObjective Performance measure that would be optimized when
 #' estimating the threshold. The options are 'Gm' (geometric mean of the SE and
-#' the SP), 'G' (geometric mean of the SE and the precision) and 'none' (do not
-#' calculate any threshold). The default value is 'Gm'.
+#' the SP), 'G' (geometric mean of the SE and the precision), 'F1' (harmonic
+#' mean between SE and the precision) and 'none' (do not calculate any
+#' threshold). The default value is 'Gm'.
 #' @param threadNumber Number of threads used for the calculations. If it is NA
 #' leave OpenMP decide the number (may vary across different platforms).
 #' @return Returns a vector with the same size of the input vector y with the
@@ -61,18 +66,18 @@
 #' SP = mean(p[!celegans$CLASS & y==0] < 0)
 #' cat("Sensitivity: ", SE, "\nSpecificity: ", SP, "\n")
 #'
-#' @import BiocGenerics
-#' @importFrom Matrix sparseMatrix colSums
+#' @import Matrix
+#' @importFrom stats var
 #' @importFrom CORElearn attrEval
 #' @importFrom RSpectra eigs_sym eigs
 #' @importFrom Rcpp evalCpp
 #' @useDynLib miRNAss
 #' @export
-miRNAss =  function(sequenceFeatures, sequenceLabels,
-                    nEigenVectors = min(400, round(nrow(sequenceFeatures) / 5)),
+miRNAss =  function(sequenceFeatures = NULL, sequenceLabels, AdjMatrix = NULL,
                     nNearestNeighbor = 10, missPenalization = 1,
-                    scallingMethod = "relief", positiveProp = NULL,
-                    neg2label = 0.05, thresholdObjective = "Gm",
+                    scallingMethod = "relief", thresholdObjective = "Gm",
+                    neg2label = 0.05, positiveProp = NULL,
+                    nEigenVectors = min(400, round(length(sequenceLabels) / 5)),
                     threadNumber = NA) {
     nx <- length(sequenceLabels)
     nEigenVectors <- min(nEigenVectors, round(nx / 2))
@@ -83,46 +88,49 @@ miRNAss =  function(sequenceFeatures, sequenceLabels,
             positiveProp <- sum(sequenceLabels > 0) / sum(sequenceLabels != 0)
     } else {
         if (is.null(positiveProp))
-            positiveProp <- 2 * sum(sequenceLabels > 0)/sum(sequenceLabels == 0)
-        if (scallingMethod == "relief") {
-            warning( paste0("Relief cannot be used without negative ",
-                            "examples, switching to whitening"))
-            scallingMethod <- "whitening"
-        }
+            positiveProp <- 2 * sum(sequenceLabels > 0) / length(sequenceLabels)
+
     }
 
-    if (scallingMethod == "relief")
-        sequenceFeatures <- .reliefScalling(x = sequenceFeatures,
-                                            y = sequenceLabels,
-                                            nn = nNearestNeighbor)
-    else if (scallingMethod == "whitening")
-        sequenceFeatures <- scale(sequenceFeatures)
-    else if (scallingMethod != "none")
-        stop("Invalid scalling method")
+    if (!is.null(sequenceFeatures)) {
+        if (scallingMethod == "relief") {
+            if (!any(sequenceLabels < 0)) {
+                warning( paste0("Relief cannot be used without negative ",
+                                "examples, switching to whitening"))
+                sequenceFeatures <- scale(sequenceFeatures)
+            } else {
+                sequenceFeatures <- .reliefScalling(x = sequenceFeatures,
+                                                    y = sequenceLabels,
+                                                    nn = nNearestNeighbor)
+            }
+        } else if (scallingMethod == "whitening") {
+            sequenceFeatures <- scale(sequenceFeatures)
+        }
+        else if (scallingMethod != "none") {
+            stop("Invalid scalling method")
+        }
 
+        AdjMatrix <- .adjacencyMatrixKNN(x = sequenceFeatures,
+                                         y = sequenceLabels,
+                                         nn = nNearestNeighbor,
+                                         threadNumber = threadNumber)
+    } else if (is.null(AdjMatrix))
+        stop("Either sequenceFeatures or AdjMatrix must be provided.")
 
-    A <- .adjacencyMatrixKNN(x = sequenceFeatures, y = sequenceLabels,
-                            nn = nNearestNeighbor,
-                            threadNumber = threadNumber)
-
-    desc <- .eigenDecom(A, nEigenVectors)
+    eigenVectors <- .eigenDecom(AdjMatrix, nEigenVectors)
 
     if (!any(sequenceLabels < 0))
-        sequenceLabels <- .searchNegatives(
-            A = A,
-            y = sequenceLabels,
-            posFrac = positiveProp,
-            prop2label = neg2label
-        )
+        sequenceLabels <- .searchNegatives(A = AdjMatrix,
+                                           y = sequenceLabels,
+                                           posFrac = positiveProp,
+                                           prop2label = neg2label)
 
-    pred <- .solveOptim(desc, sequenceLabels, positiveProp, missPenalization)
+    pred <- .solveOptim(eigenVectors, sequenceLabels,
+                        positiveProp, missPenalization)
 
-    if (thresholdObjective == "Gm")
-        pred <- pred - .calcThreshold(pred, sequenceLabels, TRUE)
-    else if (thresholdObjective == "G")
-        pred <- pred - .calcThreshold(pred, sequenceLabels, FALSE)
-    else if (thresholdObjective != "zero")
-        stop("Invalid threshold objective")
+    thresNumber = which(thresholdObjective == c("Gm", "G", "F1"))
+    if (length(thresNumber) > 0)
+        pred <- pred - .calcThreshold(pred, sequenceLabels, thresNumber)
 
     pos <- pred > 0
     pred[pos] <- pred[pos] / abs(max(pred[pos]))
@@ -152,11 +160,11 @@ miRNAss =  function(sequenceFeatures, sequenceLabels,
 .eigenDecom <- function(A, nev) {
     nx <- nrow(A)
     D  <-   sparseMatrix(i = seq(1, nx),
-                        j = seq(1, nx),
-                        x = 1 / sqrt(colSums(A)))
+                         j = seq(1, nx),
+                         x = 1 / sqrt(colSums(A)))
     Lnorm <- sparseMatrix(   i = seq(1, nx),
-                            j = seq(1, nx),
-                            x = rep(1, nx)) - D %*% A %*% D
+                             j = seq(1, nx),
+                             x = rep(1, nx)) - D %*% A %*% D
 
     lambda <- eigs_sym(
         A = Lnorm,
@@ -225,8 +233,8 @@ miRNAss =  function(sequenceFeatures, sequenceLabels,
 
 .reliefScalling <- function(x, y, nn) {
     x <- x[, apply(  X = x,
-                    MARGIN = 2,
-                    FUN = var) > .Machine$double.eps]
+                     MARGIN = 2,
+                     FUN = var) > .Machine$double.eps]
     x <- scale(x)
 
     # If there any negative example, use the unlabeled
