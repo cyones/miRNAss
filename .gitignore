@@ -13,3 +13,8 @@ tests
 inst/doc
 miRNAss.Rproj
 README.gddoc
+vignettes/miRNAss.pdf
+vignettes/miRNAss.synctex.gz
+vignettes/miRNAss.tex
+vignettes/miRNAss-concordance.tex
+vignettes/miRNAss.log
