@@ -20,7 +20,7 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 %------------------------------------------------------------
-\title{\Rpackage{miRNAss}: Genome-wide pre-miRNA discovery from few labeled
+\title{Using \Rpackage{miRNAss} to discover pre-miRNA in genome-wide data from few labeled
 examples}
 %------------------------------------------------------------
 \author[1]{Cristian A. Yones (\url{cyones@sinc.unl.edu.ar})}
