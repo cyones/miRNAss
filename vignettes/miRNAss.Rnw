@@ -20,7 +20,7 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 %------------------------------------------------------------
-\title{\Rpackage{miRNAss}: Genome-wide pre-miRNA discovery from few labeled 
+\title{\Rpackage{miRNAss}: Genome-wide pre-miRNA discovery from few labeled
 examples}
 %------------------------------------------------------------
 \author[1]{Cristian A. Yones (\url{cyones@sinc.unl.edu.ar})}
@@ -53,6 +53,24 @@ development version of the package can be found at:
 
 Other related projects can be found in \url{http://fich.unl.edu.ar/sinc/}
 }
+
+\section{Input data}
+MiRNAss receive as input numerical features extracted from hairpin sequences.
+This means that a genome needs to be pre-proccesed to be able to make
+predictions with miRNAss. There are two steps: split the genome-wide data in
+shorter sequences and extract features from this sequences. The first step can
+be accomplished with \textit{HExtractor}
+(\url{https://sourceforge.net/projects/sourcesinc/files/hextractor/}), which is
+a tool specifically designed for this task. For the feature extraction there are
+many tools available that can calculate different sets of features. We have
+developed a comprehensive tool of feature extraction called \textit{miRNAfe}
+\url{http://fich.unl.edu.ar/sinc/blog/web-demo/mirnafe-full/} that
+is able of calculate almost all the features used in the state-of-the-art
+prediction methods. For further details on \textit{miRNAfe} see Yones
+\textit{et. al.}, 2015 \footnote{Yones, C. A., Stegmayer, G., Kamenetzky, L., \&
+Milone, D. H. (2015). miRNAfe: A comprehensive tool for feature extraction in
+microRNA prediction. \textit{Biosystems}, \textbf{138}, 1-5.}.
+
 
 \section{Usage}
 After install the package, load miRNAss with the following command:
