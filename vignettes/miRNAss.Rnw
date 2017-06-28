@@ -69,7 +69,7 @@ Milone, D. H. (2015). miRNAfe: A comprehensive tool for feature extraction in
 microRNA prediction. \textit{Biosystems}, \textbf{138}, 1-5.}.
 
 
-\section{How to make predictions}
+\section{How to use miRNAss}
 After install the package, load miRNAss with the following command:
 
 <<loadPackages,results=hide>>=
@@ -148,7 +148,7 @@ directory and simply run each script with the function 'source':
 
 <<loadPackages,eval=FALSE>>=
 setwd('experiment_scripts')
-source('1-cross-validation.R')
+source('2-delta_mirBase.R')
 @
 
 \noindent This will generate one csv file for each test in the 'results' folder. It is
