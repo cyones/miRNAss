@@ -69,7 +69,7 @@ Milone, D. H. (2015). miRNAfe: A comprehensive tool for feature extraction in
 microRNA prediction. \textit{Biosystems}, \textbf{138}, 1-5.}.
 
 
-\section{Usage}
+\section{How to make predictions}
 After install the package, load miRNAss with the following command:
 
 <<loadPackages,results=hide>>=
