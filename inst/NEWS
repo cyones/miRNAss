@@ -22,3 +22,5 @@ News for package miRNAss
     + Added F-measure to the objective measures.
 * Changes in miRNAss 1.1 (2017-06-26)
     + Pre-computed adjacency matrix can be provided as parameter.
+* Changes in miRNAss 1.2 (2017-07-03)
+    + Minor corrections.
