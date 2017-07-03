@@ -46,7 +46,7 @@ pre-miRNAs from other groups of sequences; it automatically optimizes the
 threshold that defines the classes boundaries, and thus, it is robust to high
 class imbalance. Each step of the method is scalable and can handle large
 volumes of data.
-The last version of the package can be found at Bioconductor. Also, the
+The last version of the package can be found at CRAN. Also, the
 development version of the package can be found at:
 \url{https://github.com/cyones/miRNAss}.
 Related projects can be found in \url{http://fich.unl.edu.ar/sinc/}
